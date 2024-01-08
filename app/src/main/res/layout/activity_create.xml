@@ -7,7 +7,8 @@
         android:id="@+id/editTextUsername"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Nom d'utilisateur" />
+        android:hint="Nom d'utilisateur"
+        android:layout_marginTop="289dp"/>
 
     <EditText
         android:id="@+id/editTextPassword"
@@ -24,6 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/editTextPassword"
         android:layout_marginStart="120dp"
+        android:textColor="@color/white"
         android:text="Creer un Compte" />
 
 </RelativeLayout>

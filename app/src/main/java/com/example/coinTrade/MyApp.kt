@@ -1,6 +1,7 @@
 package com.example.coinTrade;
 
 import android.app.Application
+import com.example.coinTrade.Database.DatabaseManager
 import org.bitcoinj.core.BlockChain
 import org.bitcoinj.core.PeerGroup
 
@@ -11,6 +12,7 @@ class MyApp : Application(){
 
     override fun onCreate(){
         super.onCreate()
+        DatabaseManager.initialize(this)
     }
 }
 

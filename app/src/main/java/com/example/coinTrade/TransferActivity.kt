@@ -3,13 +3,19 @@ package com.example.coinTrade
 import android.app.Activity
 import android.os.Bundle
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.room.Room
+import com.example.coinTrade.Database.AppDatabase
+import com.example.coinTrade.Database.DatabaseManager
+import com.example.coinTrade.Database.UserWallet
+import kotlinx.coroutines.launch
 import org.bitcoinj.core.Coin
 import org.bitcoinj.core.NetworkParameters
 import org.bitcoinj.wallet.Wallet
 
 // Activité pour acheter/vendre des bitcoins
-class TransferActivity : Activity() {
+class TransferActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_trade)
@@ -26,52 +32,51 @@ class TransferActivity : Activity() {
         // Réception du pseudo de l'utilisateur
         val receivedUsername = intent.getStringExtra("username")
 
-        // Building the Room database
-        val db = Room.databaseBuilder(
-            applicationContext,
-            AppDatabase::class.java,
-            "app-database"
-        ).build()
-        val userDao = db.userDao()
-        val user = receivedUsername?.let { userDao.getUserByUsername(it) }
+        lifecycleScope.launch {
+            // Obtenir la base de données
+            val db = DatabaseManager.getDatabase()
+            // Utiliser la base de données (par exemple, obtenir le DAO)
+            val userDao = db.userDao()
+            val user = receivedUsername?.let { userDao.getUserByUsername(it) }
 
-        // Récupération du Wallet de l'utilisateur
-        val userWallet = UserWallet(
-            NetworkParameters.fromID(NetworkParameters.ID_TESTNET),
-            "./wallets/${user?.username}/"
-        ).getWallet()
+            // Récupération du Wallet de l'utilisateur
+            val userWallet = UserWallet(
+                NetworkParameters.fromID(NetworkParameters.ID_TESTNET),
+                "./wallets/${user?.username}/"
+            ).getWallet()
 
-        // Setting up the views according to the user
-        if (user != null) {
-            usernameTextView.text = user.username
-            dollarAmountTextView.text = user.dollars.toString()
-            cryptoQuantityTextView.text = userWallet.balance.toString()
-        }
+            // Setting up the views according to the user
+            if (user != null) {
+                usernameTextView.text = user.username
+                dollarAmountTextView.text = user.dollars.toString()
+                cryptoQuantityTextView.text = userWallet.balance.toString()
+            }
 
-        val myApp = application as MyApp
+            val myApp = application as MyApp
 
-        fun transferFunds(senderUsername: String, receiverUsername: String, amount: Long) {
-            val sender = userDao.getUserByUsername(senderUsername)
-            val recipient = userDao.getUserByUsername(receiverUsername)
+            fun transferFunds(senderUsername: String, receiverUsername: String, amount: Long) {
+                val sender = userDao.getUserByUsername(senderUsername)
+                val recipient = userDao.getUserByUsername(receiverUsername)
 
-            if (sender != null && recipient != null) {
+                if (sender != null && recipient != null) {
 
-                var senderWallet = UserWallet(
-                    NetworkParameters.fromID(NetworkParameters.ID_TESTNET),
-                    "./wallets/${senderUsername}/"
-                ).getWallet()
-                val recipientWallet = UserWallet(
-                    NetworkParameters.fromID(NetworkParameters.ID_TESTNET),
-                    "./wallets/${receiverUsername}/"
-                ).getWallet()
+                    var senderWallet = UserWallet(
+                        NetworkParameters.fromID(NetworkParameters.ID_TESTNET),
+                        "./wallets/${senderUsername}/"
+                    ).getWallet()
+                    val recipientWallet = UserWallet(
+                        NetworkParameters.fromID(NetworkParameters.ID_TESTNET),
+                        "./wallets/${receiverUsername}/"
+                    ).getWallet()
 
-                val recipientAddress = recipientWallet.currentReceiveAddress()
-                val amountToSend: Coin = Coin.valueOf(amount)
-                val result: Wallet.SendResult =
-                    senderWallet.sendCoins(myApp.peerGroup, recipientAddress, amountToSend)
-                result.broadcastComplete.get()
-            } else {
-                println("Invalid sender or recipient.")
+                    val recipientAddress = recipientWallet.currentReceiveAddress()
+                    val amountToSend: Coin = Coin.valueOf(amount)
+                    val result: Wallet.SendResult =
+                        senderWallet.sendCoins(myApp.peerGroup, recipientAddress, amountToSend)
+                    result.broadcastComplete.get()
+                } else {
+                    println("Invalid sender or recipient.")
+                }
             }
         }
     }

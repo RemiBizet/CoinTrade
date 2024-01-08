@@ -1,4 +1,4 @@
-package com.example.coinTrade
+package com.example.coinTrade.Database
 
 import org.bitcoinj.core.NetworkParameters
 import org.bitcoinj.kits.WalletAppKit

@@ -1,4 +1,4 @@
-package com.example.coinTrade
+package com.example.coinTrade.Database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
