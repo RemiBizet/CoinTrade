@@ -8,10 +8,13 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.coinTrade.Database.DatabaseManager
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
-// Menu de d'authentification
+
+// Menu d'authentification
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var usernameEditText: EditText
@@ -25,44 +28,52 @@ class LoginActivity : AppCompatActivity() {
 
         // Lancer une coroutine pour effectuer des opérations de base de données
         lifecycleScope.launch {
-            // Obtenir la base de données
-            val db = DatabaseManager.getDatabase()
-            // Utiliser la base de données (par exemple, obtenir le DAO)
-            val userDao = db.userDao()
+            withContext(Dispatchers.IO) {
+                // Obtenir la base de données
+                val db = DatabaseManager.getDatabase()
+                // Utiliser la base de données (par exemple, obtenir le DAO)
+                val userDao = db.userDao()
 
-            // Mise en place des vues
-            usernameEditText = findViewById(R.id.editTextUsername)
-            passwordEditText = findViewById(R.id.editTextPassword)
-            loginButton = findViewById(R.id.buttonLogin)
-            createAccountButton = findViewById(R.id.buttonCreateAccount)
+                // Mise en place des vues
+                usernameEditText = findViewById(R.id.editTextUsername)
+                passwordEditText = findViewById(R.id.editTextPassword)
+                loginButton = findViewById(R.id.buttonLogin)
+                createAccountButton = findViewById(R.id.buttonCreateAccount)
 
 
-            // Mise en place du listener sur le bouton gérant l'authentification
-            loginButton.setOnClickListener {
-                val username = usernameEditText.text.toString()
-                val password = passwordEditText.text.toString()
+                // Mise en place du listener sur le bouton gérant l'authentification
+                loginButton.setOnClickListener {
+                    lifecycleScope.launch {
+                        val username = usernameEditText.text.toString()
+                        val password = passwordEditText.text.toString()
 
-                // Recherche de l'utilisateur dans la base de données
-                val user = userDao.getUserByUsernameAndPassword(username, password)
+                        // Recherche de l'utilisateur dans la base de données
+                        val user = userDao.getUserByUsernameAndPassword(username, password)
 
-                // Vérification des données saisies
-                if (user != null) {
-                    Toast.makeText(this@LoginActivity, "Authentification réussie", Toast.LENGTH_SHORT).show()
-                    val intent = Intent(this@LoginActivity, MainActivity::class.java)
-                    intent.putExtra("username", user.username)
-                    startActivity(intent)
-                } else {
-                    Toast.makeText(
-                        this@LoginActivity,
-                        "Nom d'utilisateur ou mot de passe incorrect",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                        // Vérification des données saisies
+                        if (user != null) {
+                            Toast.makeText(
+                                this@LoginActivity,
+                                "Authentification réussie",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                            intent.putExtra("username", user.username)
+                            startActivity(intent)
+                        } else {
+                            Toast.makeText(
+                                this@LoginActivity,
+                                "Nom d'utilisateur ou mot de passe incorrect",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
                 }
-            }
 
-            createAccountButton.setOnClickListener {
-                val intent = Intent(this@LoginActivity, CreateAccountActivity::class.java)
-                startActivity(intent)
+                createAccountButton.setOnClickListener {
+                    val intent = Intent(this@LoginActivity, CreateAccountActivity::class.java)
+                    startActivity(intent)
+                }
             }
         }
     }

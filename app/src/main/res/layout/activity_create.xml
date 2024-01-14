@@ -24,7 +24,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/editTextPassword"
-        android:layout_marginStart="120dp"
+        android:layout_marginStart="115dp"
         android:textColor="@color/white"
         android:text="Creer un Compte" />
 

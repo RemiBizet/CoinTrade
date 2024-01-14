@@ -3,6 +3,7 @@ package com.example.coinTrade.Database
 import android.content.Context
 import androidx.room.Room
 
+// Base de données Room
 object DatabaseManager {
     private var instance: AppDatabase? = null
 

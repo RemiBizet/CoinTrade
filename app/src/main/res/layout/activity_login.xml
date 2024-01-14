@@ -23,7 +23,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/editTextPassword"
-        android:layout_marginStart="135dp"
+        android:layout_marginStart="125dp"
         android:backgroundTint="@color/black"
         android:text="Se connecter"
         android:textColor="@color/white" />
@@ -33,7 +33,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/buttonLogin"
-        android:layout_marginStart="122dp"
+        android:layout_marginStart="111dp"
         android:backgroundTint="@color/black"
         android:text="Créer un compte"
         android:textColor="@color/white" />
