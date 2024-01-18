@@ -1,5 +1,6 @@
 package com.example.coinTrade
 
+import BlockchainTO52
 import WalletTO52
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -53,6 +54,7 @@ class TO52CoinActivity : AppCompatActivity() {
 
             val handler = Handler(Looper.getMainLooper())
             val myAppInstance = application as MyApp
+            myAppInstance.chainTO52 = BlockchainTO52()
             val blockchainTO52 = myAppInstance.chainTO52
 
             // Sample wallets with key pairs
@@ -108,10 +110,6 @@ class TO52CoinActivity : AppCompatActivity() {
                             ).show()
                         }
                     }
-                }
-                val keyTextView = findViewById<TextView>(R.id.keyTextView)
-                if (wallet != null) {
-                    keyTextView.text =  wallet.publicKey.toString()
                 }
             }
 

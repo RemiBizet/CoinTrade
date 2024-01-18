@@ -1,5 +1,6 @@
 import android.os.Build
 import androidx.annotation.RequiresApi
+import org.bouncycastle.asn1.x509.ObjectDigestInfo.publicKey
 import java.security.*
 import java.util.*
 
@@ -29,7 +30,27 @@ data class WalletTO52(
 @RequiresApi(Build.VERSION_CODES.O)
 class BlockchainTO52 {
     private val blockchain = mutableListOf<Block>()
+    init {
+        // Create the genesis block
+        createGenesisBlock()
+    }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun createGenesisBlock() {
+        val transactions = listOf(
+            Transaction("Genesis", "Recipient1", 100.0),
+            Transaction("Genesis", "Recipient2", 50.0)
+        )
+
+        val index = 0
+        val previousHash = "0"
+        val timestamp = System.currentTimeMillis()
+        val hash = calculateHash(index, previousHash, timestamp, transactions)
+
+        val genesisBlock = Block(index, previousHash, timestamp, transactions, hash)
+        blockchain.add(genesisBlock)
+    }
+    
     @RequiresApi(Build.VERSION_CODES.O)
     fun generateKeyPair(): KeyPair {
         val keyPairGenerator = KeyPairGenerator.getInstance("RSA")
