@@ -4,6 +4,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import android.widget.RadioButton
+import android.widget.RadioGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -21,6 +23,7 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var passwordEditText: EditText
     private lateinit var loginButton: Button
     private lateinit var createAccountButton: Button
+    private lateinit var radioGroupSelectionMode: RadioGroup
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,7 +42,7 @@ class LoginActivity : AppCompatActivity() {
                 passwordEditText = findViewById(R.id.editTextPassword)
                 loginButton = findViewById(R.id.buttonLogin)
                 createAccountButton = findViewById(R.id.buttonCreateAccount)
-
+                radioGroupSelectionMode = findViewById(R.id.radioGroupSelectionMode)
 
                 // Mise en place du listener sur le bouton gérant l'authentification
                 loginButton.setOnClickListener {
@@ -57,9 +60,30 @@ class LoginActivity : AppCompatActivity() {
                                 "Authentification réussie",
                                 Toast.LENGTH_SHORT
                             ).show()
-                            val intent = Intent(this@LoginActivity, MainActivity::class.java)
-                            intent.putExtra("username", user.username)
-                            startActivity(intent)
+
+                            val selectedRadioButtonId = radioGroupSelectionMode.checkedRadioButtonId
+                            val selectedRadioButton = findViewById<RadioButton>(selectedRadioButtonId)
+
+                            if (selectedRadioButton != null) {
+                                val selectedActivity = when (selectedRadioButton.id) {
+                                    R.id.radioButtonTestNet -> MainActivity::class.java
+                                    R.id.radioButtonRegTest -> RegTestActivity::class.java
+                                    R.id.radioButtonTO52 -> TO52CoinActivity::class.java
+                                    else -> MainActivity::class.java
+                                }
+
+                                // Lancement du mode sélectionné
+                                val intent = Intent(this@LoginActivity, selectedActivity)
+                                intent.putExtra("username", username)
+                                startActivity(intent)
+
+                            } else {
+                                Toast.makeText(
+                                    this@LoginActivity,
+                                    "Chosissez un mode",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
                         } else {
                             Toast.makeText(
                                 this@LoginActivity,

@@ -18,11 +18,40 @@
         android:hint="Mot de passe"
         android:inputType="textPassword" />
 
+    <RadioGroup
+        android:id="@+id/radioGroupSelectionMode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/editTextPassword"
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal"
+
+        android:layout_marginStart="10dp">
+
+    <RadioButton
+            android:id="@+id/radioButtonTestNet"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TestNetBitcoin" />
+
+        <RadioButton
+            android:id="@+id/radioButtonRegTest"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="RegTestBitcoin" />
+
+        <RadioButton
+            android:id="@+id/radioButtonTO52"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TO52Coin" />
+    </RadioGroup>
+
     <Button
         android:id="@+id/buttonLogin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/editTextPassword"
+        android:layout_below="@+id/radioGroupSelectionMode"
         android:layout_marginStart="125dp"
         android:backgroundTint="@color/black"
         android:text="Se connecter"

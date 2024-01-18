@@ -40,7 +40,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/usernameTextView"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="220dp"
         android:padding="10dp"
         android:textColor="#000000"
         android:textSize="18sp"
@@ -58,58 +58,28 @@
         android:textStyle="bold"
         android:hint="Chargement de la quantité de bitcoins..."/>
 
-    <TextView
-        android:id="@+id/keyTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/cryptoQuantityTextView"
-        android:padding="10dp"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:hint="Chargement de l'adresse du Wallet..."/>
-
-    <ImageView
-        android:id="@+id/qrCodeImageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/keyTextView"
-        android:layout_marginStart="70dp"
-        android:layout_marginTop="22.5dp" />
-
 
     <com.example.coinTrade.BitcoinPriceView
         android:id="@+id/bitcoinPriceView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="480dp"
+        android:layout_marginTop="550dp"
         android:text="Valeur du Bitcoin : "
         android:textColor="#000000"
         android:textSize="18sp"
         android:textStyle="bold"/>
 
-    <EditText
-        android:id="@+id/recipientEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/bitcoinPriceView"
-        android:hint="Envoyer à utilisateur"/>
-    <EditText
-        android:id="@+id/recipientAddressEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/recipientEditText"
-        android:hint="Son adresse"/>
 
     <EditText
         android:id="@+id/amountEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/recipientAddressEditText"
-        android:hint="Montant à envoyer (en BTC)"/>
+        android:layout_below="@id/bitcoinPriceView"
+        android:hint="Montant à acheter ou vendre"/>
 
 
     <Button
-        android:id="@+id/transferButton"
+        android:id="@+id/buyButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/amountEditText"
@@ -118,10 +88,10 @@
         android:textColor="@color/white" />
 
     <Button
-        android:id="@+id/tradeButton"
+        android:id="@+id/sellButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/transferButton"
+        android:layout_below="@id/buyButton"
         android:backgroundTint="@color/black"
         android:contentDescription="Trade Button"
         android:text="Acheter/Vendre"

@@ -1,15 +1,14 @@
 package com.example.coinTrade;
 
+import BlockchainTO52
 import android.app.Application
 import com.example.coinTrade.Database.DatabaseManager
-import org.bitcoinj.core.BlockChain
-import org.bitcoinj.core.PeerGroup
+
 
 // Classe permettant la récupération de la blockchain n'importe où dans l'application
 class MyApp : Application(){
 
-    lateinit var chain: BlockChain
-    lateinit var peerGroup : PeerGroup
+    lateinit var chainTO52: BlockchainTO52
 
     override fun onCreate(){
         super.onCreate()

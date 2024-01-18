@@ -21,13 +21,15 @@ import org.bitcoinj.core.ECKey
 import org.bitcoinj.core.SegwitAddress
 import org.bitcoinj.core.listeners.DownloadProgressTracker
 import org.bitcoinj.kits.WalletAppKit
-import org.bitcoinj.params.TestNet3Params
+import org.bitcoinj.params.RegTestParams
 import org.bitcoinj.wallet.Wallet.SendResult
+import org.bitcoinj.wallet.listeners.WalletCoinsReceivedEventListener
 import java.io.File
 import java.util.Date
 
+
 // Menu principal de l'application
-class MainActivity : AppCompatActivity() {
+class RegTestActivity : AppCompatActivity() {
     @SuppressLint("CutPasteId", "SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,20 +61,29 @@ class MainActivity : AppCompatActivity() {
             val user = receivedUsername?.let { userDao.getUserByUsername(it) }
 
             // Connexion au TestNet
-            val params = TestNet3Params.get()
+            val params = RegTestParams.get()
             val handler = Handler(Looper.getMainLooper())
+
             fun startWalletTask() {
                 Thread {
                     // Création/Récupération du Wallet de l'utilisateur
-                    val walletFilePath = filesDir.path + user?.username + "testNet.dat"
+                    val walletFilePath = filesDir.path + user?.username + "regTest.dat"
                     println(walletFilePath)
                     val walletAppKit = object : WalletAppKit(params, File(walletFilePath), user?.username){
                         override fun onSetupCompleted() {
+
                             // Récupération des clefs, des adresses et du contenu du Wallet
                             if (wallet().importedKeys.size < 1) wallet().importKey(ECKey())
                             Log.d("myLogs", "My current address = " + wallet().currentReceiveAddress())
                             Log.d("myLogs", "Is my balance zero = " + wallet().balance.isZero)
-                            Log.d("myLogs", "Wallet balance in BTC = " + wallet().balance.toBtc())
+                            Log.d("myLogs", "Wallet balance in BTCc = " + wallet().balance.toBtc())
+
+                            println((peerGroup().connectedPeers.toString()))
+                            wallet()
+                                .addCoinsReceivedEventListener(WalletCoinsReceivedEventListener { w, tx, prevBalance, newBalance ->
+                                    println("Coins received!")
+                                })
+
                             lifecycleScope.launch {
                                 if (user != null) {
                                     userDao.updateAddress(
@@ -81,37 +92,18 @@ class MainActivity : AppCompatActivity() {
                                     )
                                 }
                             }
-                            // n2BHjG5QcT6uVGsaoRzVxt6opP8MTNdhR7 user:ab
-                            // mz4cnnuQ2vJsAYJpjo1DFd8EF5u9sjwbzo user:ba
-
                             val ecKey = wallet().freshReceiveKey()
                             Log.d("myLogs", "My current receiveKey = $ecKey")
                             val segwitAddress = SegwitAddress.fromKey(params, ecKey)
                             Log.d("myLogs", "My current address in segWit format = $segwitAddress")
 
-                            // tb1qu23gh8lk973wgjnpfcgffkc3wcjf2awsne0k0d user:ab
-                            // tb1qedh5kxpts4560mezuvmgmwauk5wkptwatru600 user:ba
-
-                        }
-                    }
-
-                    // Pour observer le téléchargement de la blockchain
-                    walletAppKit.setDownloadListener(object : DownloadProgressTracker() {
-                        override fun progress(pct: Double, blocksSoFar: Int, date: Date?) {
-                            super.progress(pct, blocksSoFar, date)
-                            val percentage = pct.toInt()
-                            Log.d("myLogs", "Download of the blockchain $percentage")
-                        }
-
-                        // Quand la blockchain a fini d'être chargée
-                        override fun doneDownload() {
 
                             // Mise à jours des vues
                             if (user != null) {
                                 dollarAmountTextView.text = "${user.dollars} $"
                             }
-                            val wallet = walletAppKit.wallet()
-
+                            var wallet = wallet()
+                            wallet.balance.add(Coin.COIN)
                             cryptoQuantityTextView.text = "${wallet.balance.toBtc()} BTC"
 
                             handler.post {
@@ -142,7 +134,7 @@ class MainActivity : AppCompatActivity() {
                                         // amountToSend = amountToSend.subtract(Transaction.REFERENCE_DEFAULT_MIN_TX_FEE)
 
                                         val sendResult: SendResult = wallet.sendCoins(
-                                            walletAppKit.peerGroup(),
+                                            peerGroup(),
                                             recipientAddress,
                                             amountToSend
                                         )
@@ -151,13 +143,13 @@ class MainActivity : AppCompatActivity() {
                                         sendResult.broadcastComplete
 
                                         Toast.makeText(
-                                            this@MainActivity,
+                                            this@RegTestActivity,
                                             "Envoyé $amount BTC à ${recipient.username}",
                                             Toast.LENGTH_SHORT
                                         ).show()
                                     } else {
                                         Toast.makeText(
-                                            this@MainActivity,
+                                            this@RegTestActivity,
                                             "Utilisateur non trouvé",
                                             Toast.LENGTH_SHORT
                                         ).show()
@@ -167,14 +159,27 @@ class MainActivity : AppCompatActivity() {
                             val keyTextView = findViewById<TextView>(R.id.keyTextView)
                             keyTextView.text =  wallet.currentReceiveAddress().toString()
                         }
-                    })
+                    }
 
+                    // Pour observer le téléchargement de la blockchain
+                    walletAppKit.setDownloadListener(object : DownloadProgressTracker() {
+                        override fun progress(pct: Double, blocksSoFar: Int, date: Date?) {
+                            super.progress(pct, blocksSoFar, date)
+                            val percentage = pct.toInt()
+                            Log.d("myLogs", "Download of the blockchain $percentage")
+                        }
+
+                    })
                     walletAppKit.setBlockingStartup(false)
                     walletAppKit.startAsync()
 
                     // On attend que le wallet se synchronize avec la blockchain
                     walletAppKit.awaitRunning()
+
+                    // walletAppKit.peerGroup().connectTo(InetSocketAddress("192.168.1.92", 18444))
+                    // Log.d("myLogs", "peerAdress " + walletAppKit.peerGroup().connectedPeers)
                     walletAppKit.peerGroup().downloadBlockChain()
+
 
                 }.start()
             }
@@ -187,7 +192,7 @@ class MainActivity : AppCompatActivity() {
             }
             // Mise en place du listener sur le bouton gérant la déconnexion
             logoutImageView.setOnClickListener {
-                val intentLogout = Intent(this@MainActivity, LoginActivity::class.java)
+                val intentLogout = Intent(this@RegTestActivity, LoginActivity::class.java)
                 intentLogout.flags =
                     Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 startActivity(intentLogout)
