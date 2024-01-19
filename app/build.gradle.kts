@@ -43,6 +43,7 @@ dependencies {
     implementation ("com.android.volley:volley:1.2.1")
     implementation ("androidx.lifecycle:lifecycle-runtime-ktx:2.3.1")
 
+
     implementation ("com.google.zxing:core:3.4.0")
 
 

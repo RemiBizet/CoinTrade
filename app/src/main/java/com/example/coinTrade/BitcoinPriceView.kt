@@ -22,7 +22,7 @@ class BitcoinPriceView @JvmOverloads constructor(
             Request.Method.GET, url, null,
             { response ->
                 val bitcoinPrice = response.getJSONObject("bitcoin").getDouble("usd").toString()
-                text = "Valeur du bitcoin (USD) $bitcoinPrice"
+                text = bitcoinPrice
             },
             {
                 text = "Echec de l'obtention du prix du bitcoin"
