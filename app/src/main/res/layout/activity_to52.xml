@@ -92,6 +92,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/bitcoinPriceView"
+        android:inputType="text"
+        android:imeOptions="actionDone"
         android:hint="Envoyer à utilisateur"/>
 
     <EditText
@@ -99,6 +101,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/recipientEditText"
+        android:inputType="numberDecimal"
+        android:imeOptions="actionDone"
         android:hint="Montant à envoyer (en BTC)"/>
 
 

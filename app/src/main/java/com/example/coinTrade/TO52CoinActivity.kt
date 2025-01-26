@@ -9,6 +9,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
@@ -137,7 +138,7 @@ class TO52CoinActivity : AppCompatActivity() {
                     }
                 }
 
-                // Mise à jours des vues
+                // Mise à jour des vues
                 usernameTextView.text = user.username
                 dollarAmountTextView.text = "${user.dollars} $"
                 cryptoQuantityTextView.text = "${wallet.balance} TO52Coins"
@@ -161,6 +162,7 @@ class TO52CoinActivity : AppCompatActivity() {
                     startActivity(intentBuySell)
                     finish()
                 }*/
+
             }
         }
     }
